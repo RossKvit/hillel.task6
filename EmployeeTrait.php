@@ -4,9 +4,10 @@ trait EmployeeTrait{
     private $salary;
     private $position;
     private $startDate;
+    private $increaseSalaryCof = 0.05;
 
     /**
-     * @param mixed $name
+     * @param string $name
      */
     public function setName($name)
     {
@@ -14,7 +15,7 @@ trait EmployeeTrait{
     }
 
     /**
-     * @param mixed $salary
+     * @param int $salary
      */
     public function setSalary($salary)
     {
@@ -22,7 +23,7 @@ trait EmployeeTrait{
     }
 
     /**
-     * @param mixed $position
+     * @param string $position
      */
     public function setPosition($position)
     {
@@ -30,22 +31,38 @@ trait EmployeeTrait{
     }
 
     /**
-     * @param mixed $startDate
+     * @param string $startDate
      */
-    public function setStartDate($startDate)
+    public function setStartDate(string $startDate)
     {
-        $this->startDate = $startDate;
+        $this->startDate = new DateTime( $startDate );
     }
+
     public function getName(){
         return $this->name;
     }
+
     public function getSalary(){
-        return $this->salary;
+        return $this->salary + $this->getSalaryIncrease( $this->salary );
     }
+
+    public function getSalaryIncrease( int $baseSalary ){
+        $salaryIncrease = 0;
+        $intervalYears = (int)$this->startDate->diff( new DateTime() )->y;
+
+        if( $intervalYears > 1 ){
+            $salaryIncrease = $intervalYears * ( $baseSalary * $this->increaseSalaryCof );
+        }
+
+        return $salaryIncrease;
+    }
+
     public function getPosition(){
         return $this->position;
     }
-    public function getStartDate(){
-        return $this->name;
+
+    public function getStartDate():DateTimeInterface
+    {
+        return $this->startDate;
     }
 }
